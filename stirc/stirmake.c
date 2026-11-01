@@ -5185,6 +5185,14 @@ int merge_db(void)
 {
   if (!part2_done)
   {
+    if (linked_list_is_empty(&db.ll) && linked_list_is_empty(&tsdb.ll) &&
+        !dbf_did_exist)
+    {
+      fclose(dbf);
+      dbf = NULL;
+      unlink(".stir.db");
+      return 0;
+    }
     return 0;
   }
   if (usetsdb)
