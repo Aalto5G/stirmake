@@ -77,7 +77,7 @@ echo "Version: $nonvname" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || d
 echo "Architecture: $DEBARCH" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
 echo "Maintainer: Juha-Matti Tilli" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
 echo "Description: Stirmake, scalable true implementation of recursive make, for easy multi-dir builds." >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
-dpkg-deb --build -Zgzip stirmake_"$nonvname"_"$DEBARCH" || die "dpkg-deb fail"
+dpkg-deb --build --deb-format=2.0 -Zgzip -z9 --uniform-compression stirmake_"$nonvname"_"$DEBARCH" || die "dpkg-deb fail"
 echo "Name: stirmake" > rpmbuild/SPECS/stirmake.spec || die "echo fail"
 echo "Version: $nonvnameu" >> rpmbuild/SPECS/stirmake.spec || die "echo fail"
 #echo "Release: 1%{?dist}" >> rpmbuild/SPECS/stirmake.spec || die "echo fail"
@@ -124,7 +124,11 @@ echo "/usr/share/man/man1/smkt.1.gz" >> rpmbuild/SPECS/stirmake.spec || die "ech
 echo "/usr/share/man/man1/smkp.1.gz" >> rpmbuild/SPECS/stirmake.spec || die "echo fail"
 cp -p stirmake-"$vname"/stirmake rpmbuild/SOURCES || die "cp fail"
 cp -p stirmake-"$vname"/stirmake.1 rpmbuild/SOURCES || die "cp fail"
-rpmbuild --target="$RPMTGT" -D "_topdir $tmpdir/rpmbuild" -ba "$tmpdir/rpmbuild/SPECS/stirmake.spec" || die "rpmbuild fail"
+rpmbuild --target="$RPMTGT" -D "_topdir $tmpdir/rpmbuild" -ba \
+  --define "_binary_payload w9.gzdio" \
+  --define "_binary_filedigest_algorithm 8" \
+  --define "_rpmformat 4" \
+  "$tmpdir/rpmbuild/SPECS/stirmake.spec" || die "rpmbuild fail"
 rm -rf stirmake-"$vname"
 rm -rf stirmake_"$nonvname"_"$DEBARCH"
 cd "$pwd" || die "Can't chdir back to old directory"
