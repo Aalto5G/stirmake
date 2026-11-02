@@ -128,8 +128,8 @@ echo "+SIZE_PKG" >> stage/+CONTENTS || die "echo fail"
 echo "@ignore" >> stage/+CONTENTS || die "echo fail"
 echo "+SIZE_ALL" >> stage/+CONTENTS || die "echo fail"
 
-tar --format=posix --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +COMMENT +DESC +BUILD_INFO +SIZE_PKG +SIZE_ALL || die "tar fail"
-tar --format=posix -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
+tar --format=posix --owner=root --group=wheel --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +COMMENT +DESC +BUILD_INFO +SIZE_PKG +SIZE_ALL || die "tar fail"
+tar --format=posix --owner=root --group=wheel --mode="go-w" -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
   bin/stirmake \
   bin/smka \
   bin/smkt \

@@ -111,8 +111,8 @@ echo 'maintainer: "juha-matti.tilli@iki.fi"' >> stage/+COMPACT_MANIFEST || die "
 echo 'www: "https://github.com/Aalto5G/stirmake"' >> stage/+COMPACT_MANIFEST || die "echo fail"
 echo 'prefix: "/usr/local"' >> stage/+COMPACT_MANIFEST || die "echo fail"
 
-tar --format=posix --no-recursion -cf stirmake-"$nonvname".tar -C stage +MANIFEST +COMPACT_MANIFEST || die "tar fail"
-tar --format=posix -P --no-recursion --transform='s|^usr/|/usr/|' -rf stirmake-"$nonvname".tar -C stage \
+tar --format=posix --owner=root --group=wheel --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +MANIFEST +COMPACT_MANIFEST || die "tar fail"
+tar --format=posix --owner=root --group=wheel --mode="go-w" -P --no-recursion --transform='s|^usr/|/usr/|' -rf stirmake-"$nonvname".tar -C stage \
   usr/local/bin/stirmake \
   usr/local/bin/smka \
   usr/local/bin/smkt \
