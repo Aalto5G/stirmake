@@ -67,7 +67,7 @@ cd ../.. || die "Can't chdir"
 
 
 mv stirmake stirmake-"$vname" || die "Can't rename directory"
-tar czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
+tar --format=posix --owner=root --group=wheel --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
 
 mkdir -p stage/usr/local/bin || die "mkdir fail"
 mkdir -p stage/usr/local/share/man/man1 || die "mkdir fail"
