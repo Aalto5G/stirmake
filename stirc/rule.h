@@ -87,10 +87,10 @@ struct rule {
   unsigned is_under_consideration:1;
   mysize_t diridx;
   mysize_t meatidx;
+  int ruleid;
   struct cmdsrc cmdsrc;
   struct cmd cmd; // calculated from cmdsrc
   struct timespec st_mtim;
-  int ruleid;
   struct abce_rb_tree_nocmp tgts[TGTS_SIZE];
   struct linked_list_head tgtlist;
   //struct abce_rb_tree_nocmp deps[DEPS_SIZE];
