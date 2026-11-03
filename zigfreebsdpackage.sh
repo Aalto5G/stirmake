@@ -67,7 +67,7 @@ cd ../.. || die "Can't chdir"
 
 
 mv stirmake stirmake-"$vname" || die "Can't rename directory"
-tar --format=posix --owner=root --group=wheel --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
 
 mkdir -p stage/usr/local/bin || die "mkdir fail"
 mkdir -p stage/usr/local/share/man/man1 || die "mkdir fail"
@@ -111,8 +111,8 @@ echo 'maintainer: "juha-matti.tilli@iki.fi"' >> stage/+COMPACT_MANIFEST || die "
 echo 'www: "https://github.com/Aalto5G/stirmake"' >> stage/+COMPACT_MANIFEST || die "echo fail"
 echo 'prefix: "/usr/local"' >> stage/+COMPACT_MANIFEST || die "echo fail"
 
-tar --format=posix --owner=root --group=wheel --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +MANIFEST +COMPACT_MANIFEST || die "tar fail"
-tar --format=posix --owner=root --group=wheel --mode="go-w" -P --no-recursion --transform='s|^usr/|/usr/|' -rf stirmake-"$nonvname".tar -C stage \
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +MANIFEST +COMPACT_MANIFEST || die "tar fail"
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" -P --no-recursion --transform='s|^usr/|/usr/|' -rf stirmake-"$nonvname".tar -C stage \
   usr/local/bin/stirmake \
   usr/local/bin/smka \
   usr/local/bin/smkt \

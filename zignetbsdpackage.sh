@@ -79,7 +79,7 @@ cd ../.. || die "Can't chdir"
 
 
 mv stirmake stirmake-"$vname" || die "Can't rename directory"
-tar --format=posix --owner=root --group=wheel --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
 
 mkdir -p stage/bin || die "mkdir fail"
 mkdir -p stage/man/man1 || die "mkdir fail"
@@ -128,8 +128,8 @@ echo "+SIZE_PKG" >> stage/+CONTENTS || die "echo fail"
 echo "@ignore" >> stage/+CONTENTS || die "echo fail"
 echo "+SIZE_ALL" >> stage/+CONTENTS || die "echo fail"
 
-tar --format=posix --owner=root --group=wheel --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +COMMENT +DESC +BUILD_INFO +SIZE_PKG +SIZE_ALL || die "tar fail"
-tar --format=posix --owner=root --group=wheel --mode="go-w" -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +COMMENT +DESC +BUILD_INFO +SIZE_PKG +SIZE_ALL || die "tar fail"
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
   bin/stirmake \
   bin/smka \
   bin/smkt \

@@ -99,7 +99,7 @@ cd ../.. || die "Can't chdir"
 
 
 mv stirmake stirmake-"$vname" || die "Can't rename directory"
-tar --format=posix --owner=root --group=wheel --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
+tar --format=posix --owner=root:0 --group=wheel:0 --mode="go-w" -czvf stirmakebin-"$PKGARCH"-"$vname".tar.gz stirmake-"$vname"/stirmake stirmake-"$vname"/smka stirmake-"$vname"/smkt stirmake-"$vname"/smkp stirmake-"$vname"/install.sh stirmake-"$vname"/stirmake.1 || die "Can't create tar.gz"
 
 mkdir -p stage/bin || die "mkdir fail"
 mkdir -p stage/man/man1 || die "mkdir fail"
@@ -150,8 +150,8 @@ echo "man/man1/smkp.1" >> stage/+CONTENTS || die "echo fail"
 echo "@symlink stirmake.1" >> stage/+CONTENTS || die "echo fail"
 
 
-tar --format=posix --owner=root --group=bin --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +DESC || die "tar fail"
-tar --format=posix --owner=root --group=bin --mode="go-w" -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
+tar --format=posix --owner=root:0 --group=bin:7 --mode="go-w" --no-recursion -cf stirmake-"$nonvname".tar -C stage +CONTENTS +DESC || die "tar fail"
+tar --format=posix --owner=root:0 --group=bin:7 --mode="go-w" -P --no-recursion -rf stirmake-"$nonvname".tar -C stage \
   bin/stirmake \
   bin/smka \
   bin/smkt \
