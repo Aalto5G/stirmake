@@ -9,7 +9,7 @@
 # - /opt/PACKAGENAME/share/man
 # - /opt/man (reserved for sysadmin)
 # MacOS: /usr/local/share/man
-# FreeBSD: /usr/local/man
+# FreeBSD: /usr/local/share/man
 # OpenBSD: /usr/local/man
 # NetBSD: /usr/pkg/man, /usr/local/man
 # DragonflyBSD: /usr/local/man
@@ -50,6 +50,9 @@ elif [ "$ISLOCAL" = 1 ]; then
 elif [ "$P" = "/usr/local" -o "$P" = "/usr/local/" ]; then
   case "$(uname -s)" in
     Linux)
+      PMAN="$PREFIX/share"
+      ;;
+    FreeBSD)
       PMAN="$PREFIX/share"
       ;;
     Darwin)
