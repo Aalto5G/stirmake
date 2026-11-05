@@ -43,16 +43,15 @@ fi
 
 P="$PREFIX"
 PMAN="$PREFIX"
-if [ "$P" = "/usr" -o "$P" = "/usr/" ]; then
+if [ "$(uname -s)" = "FreeBSD" ]; then
+  PMAN="$PREFIX/share"
+elif [ "$P" = "/usr" -o "$P" = "/usr/" ]; then
   PMAN="$PREFIX/share"
 elif [ "$ISLOCAL" = 1 ]; then
   PMAN="$PREFIX/share"
 elif [ "$P" = "/usr/local" -o "$P" = "/usr/local/" ]; then
   case "$(uname -s)" in
     Linux)
-      PMAN="$PREFIX/share"
-      ;;
-    FreeBSD)
       PMAN="$PREFIX/share"
       ;;
     Darwin)
