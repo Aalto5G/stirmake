@@ -77,7 +77,7 @@ echo "Version: $nonvname" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || d
 echo "Architecture: $DEBARCH" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
 echo "Maintainer: Juha-Matti Tilli" >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
 echo "Description: Stirmake, scalable true implementation of recursive make, for easy multi-dir builds." >> stirmake_"$nonvname"_"$DEBARCH/DEBIAN/control" || die "echo fail"
-dpkg-deb --build --deb-format=2.0 -Zgzip -z9 --uniform-compression stirmake_"$nonvname"_"$DEBARCH" || die "dpkg-deb fail"
+dpkg-deb --build --deb-format=2.0 -Zgzip -z9 --uniform-compression --root-owner-group stirmake_"$nonvname"_"$DEBARCH" || die "dpkg-deb fail"
 echo "Name: stirmake" > rpmbuild/SPECS/stirmake.spec || die "echo fail"
 echo "Version: $nonvnameu" >> rpmbuild/SPECS/stirmake.spec || die "echo fail"
 #echo "Release: 1%{?dist}" >> rpmbuild/SPECS/stirmake.spec || die "echo fail"
