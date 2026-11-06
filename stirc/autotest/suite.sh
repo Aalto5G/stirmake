@@ -31,7 +31,7 @@ runtest "isfun"
 runtest "nostirfile"
 
 echo "Failure count: $FAILCNT"
-if [ "$FAILTCNT" = 0 ]; then
+if [ "$FAILCNT" = 0 ]; then
   exit 0
 fi
 exit 1
