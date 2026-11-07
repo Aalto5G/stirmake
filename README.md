@@ -45,6 +45,65 @@ https://jmtilli.github.io/stirmakeguide
 * Full GNU make jobserver integration, allowing parallel sub-makes
 * Modification of dependencies on the fly, so that the built system can affect the build system
 
+## Installing pre-build stirmake on Linux
+
+Currently, there are pre-built binary packages for several architectures. How
+to install stirmake on RPM-based system:
+
+AMD64:
+
+```
+sudo rpm -i https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake-0.4.4-1.x86_64.rpm
+```
+
+ARM64:
+
+```
+sudo rpm -i https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake-0.4.4-1.aarch64.rpm
+```
+
+ARM32:
+
+```
+sudo rpm -i https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake-0.4.4-1.armv7hl.rpm
+```
+
+i386:
+
+```
+sudo rpm -i https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake-0.4.4-1.i686.rpm
+```
+
+On a DEB-based system:
+
+AMD64:
+
+```
+curl -Lo sm.deb https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake_0.4.4_amd64.deb
+sudo dpkg -i sm.deb
+```
+
+ARM64:
+
+```
+curl -Lo sm.deb https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake_0.4.4_arm64.deb
+sudo dpkg -i sm.deb
+```
+
+ARM32:
+
+```
+curl -Lo sm.deb https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake_0.4.4_armhf.deb
+sudo dpkg -i sm.deb
+```
+
+i386:
+
+```
+curl -Lo sm.deb https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake_0.4.4_i386.deb
+sudo dpkg -i sm.deb
+```
+
 ## Building stirmake
 
 In order to build stirmake, you need to install development tools, git, flex
@@ -66,7 +125,17 @@ If you use cygwin, install flex and byacc but also install m4, because flex
 requires it and selecting flex does not automatically select m4. Also gcc and
 binutils are required.
 
-Stirmake is built in the following way using GNU make to bootstrap it:
+A release version can be built without git, flex and byacc. How to download a
+release:
+
+```
+curl -Lo sm.tgz https://github.com/Aalto5G/stirmake/releases/download/v0.4.4/stirmake-v0.4.4.tar.gz
+tar xzvf sm.tgz
+cd stirmake-v0.4.4
+```
+
+Stirmake is built in the following way using GNU make to bootstrap it (omit git
+commands if building a released version):
 
 ```
 git submodule init
@@ -75,7 +144,8 @@ cd stirc
 make
 ```
 
-Or if GNU make is not available, shell can be used to bootstrap it:
+Or if GNU make is not available, shell can be used to bootstrap it (omit git
+commands if building a released version):
 
 ```
 git submodule init
