@@ -20,6 +20,12 @@ if [ '!' -x "stirmake" ]; then
   exit 1
 fi
 
+echocmd()
+{
+  echo "$@"
+  "$@"
+}
+
 RELOGIN=0
 ISLOCAL=0
 PREFIX="$1"
@@ -30,7 +36,7 @@ if [ "a$PREFIX" = "a" ]; then
   if [ '!' -d "$PREFIX" ]; then
     RELOGIN=1
   fi
-  mkdir -p "$PREFIX"
+  echocmd mkdir -p "$PREFIX"
   case "$(uname -s)" in
     Linux)
       ;;
@@ -91,38 +97,38 @@ fi
 instbin()
 {
   if [ -e "$P/bin/$1" ]; then
-    ln "$P/bin/$1" "$P/bin/.$1.smkinstold.$$.$H" || exit 1
+    echocmd ln "$P/bin/$1" "$P/bin/.$1.smkinstold.$$.$H" || exit 1
   fi
-  cp "$1" "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
-  mv "$P/bin/.$1.smkinstnew.$$.$H" "$P/bin/$1" || exit 1
+  echocmd cp "$1" "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
+  echocmd mv "$P/bin/.$1.smkinstnew.$$.$H" "$P/bin/$1" || exit 1
   if [ -e "$P/bin/.$1.smkinstold.$$.$H" ]; then
     # If you mount binaries across NFS, and run this command on the NFS server,
     # you might want to comment out this rm command.
-    rm "$P/bin/.$1.smkinstold.$$.$H" || exit 1
+    echocmd rm "$P/bin/.$1.smkinstold.$$.$H" || exit 1
   fi
 }
 
 instsym()
 {
   if [ "`readlink "$P/bin/$1"`" != "stirmake" ]; then
-    ln -s stirmake "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
-    mv "$P/bin/.$1.smkinstnew.$$.$H" "$P/bin/$1" || exit 1
+    echocmd ln -s stirmake "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
+    echocmd mv "$P/bin/.$1.smkinstnew.$$.$H" "$P/bin/$1" || exit 1
   fi
 }
 
 instman()
 {
-  mkdir -p "$PMAN/man/man$2" || exit 1
-  cp "$1.$2" "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
-  mv "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" "$PMAN/man/man$2/$1.$2" || exit 1
+  echocmd mkdir -p "$PMAN/man/man$2" || exit 1
+  echocmd cp "$1.$2" "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
+  echocmd mv "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" "$PMAN/man/man$2/$1.$2" || exit 1
 }
 
 instmansym()
 {
-  mkdir -p "$PMAN/man/man$2" || exit 1
+  echocmd mkdir -p "$PMAN/man/man$2" || exit 1
   if [ "`readlink "$PMAN/man/man$2/$1.$2"`" != "stirmake.1" ]; then
-    ln -s "stirmake.1" "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
-    mv "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" "$PMAN/man/man$2/$1.$2" || exit 1
+    echocmd ln -s "stirmake.1" "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
+    echocmd mv "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" "$PMAN/man/man$2/$1.$2" || exit 1
   fi
 }
 
@@ -132,7 +138,7 @@ if [ "$ISLOCAL" = "1" ]; then
     RELOGIN=1
   fi
 fi
-mkdir -p "$P/bin" || exit 1
+echocmd mkdir -p "$P/bin" || exit 1
 
 # Install binary
 instbin stirmake
