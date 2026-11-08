@@ -16,6 +16,14 @@ $(CC) ?= @nil
   @endif
 @endif
 
+$(AR) ?= @nil
+@if(@type($(AR)) == @type(@nil))
+  $(AR) ``= ["sh", "-c", "echo $AR"]
+  @if($(AR)[] == 0)
+    $(AR) = ["ar"]
+  @endif
+@endif
+
 $(CFLAGS) ?= @nil
 @if(@type($(CFLAGS)) == @type(@nil))
   $(CFLAGS) ``= ["sh", "-c", "echo $CFLAGS"]
@@ -184,7 +192,7 @@ $POSIXFUNCLIST="getenv|globfree|raise|free|recv|putchar|abort|unlink|round|".\
 
 'libstirmake.a': $(OBJ_LIB) $(OBJGEN_LIB)
 @	["rm", "-f", $@]
-@	["ar", "rvs", $@, @@suffilter($^, ".o")]
+@	[@$(AR), "rvs", $@, @@suffilter($^, ".o")]
 
 @deponly: 'stiryy.tab.c': 'git.h'
 @deponly: 'yyutils.o': 'git.h'
