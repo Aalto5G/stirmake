@@ -15,21 +15,25 @@ if [ "$1" = "arm64" ]; then
   export PKGARCH="arm64-linux-glibc2.17"
   export DEBARCH="arm64"
   export RPMTGT="aarch64"
+  export PACMANARCH="aarch64"
 elif [ "$1" = "arm32" ]; then
   export CC="zig cc -target arm-linux-gnueabihf.2.7"
   export PKGARCH="arm32hf-linux-glibc2.7"
   export DEBARCH="armhf"
   export RPMTGT="armv7hl"
+  export PACMANARCH="armv7h"
 elif [ "$1" = "amd64" ]; then
   export CC="zig cc -target x86_64-linux-gnu.2.7"
   export PKGARCH="amd64-linux-glibc2.7"
   export DEBARCH="amd64"
   export RPMTGT="x86_64"
+  export PACMANARCH="x86_64"
 elif [ "$1" = "i386" ]; then
   export CC="zig cc -target x86-linux-gnu.2.7"
   export PKGARCH="i386-linux-glibc2.7"
   export DEBARCH="i386"
   export RPMTGT="i686"
+  export PACMANARCH="i686"
 else
   die "Unsupported architecture: $1"
 fi
@@ -48,6 +52,7 @@ case "$nonvname" in
     nonvname="${vname#v}"
 esac
 nonvnameu="`echo "$nonvname"|tr '-' '_'`"
+nonvnamep="`echo "$nonvname"|sed 's/-/.r/'|sed 's/-/./g'`"
 chmod 755 stirmake || die "chmod fail"
 chmod 644 stirmake.1 || die "chmod fail"
 mv stirmake .. || die "mv fail"
@@ -129,6 +134,33 @@ rpmbuild --target="$RPMTGT" -D "_topdir $tmpdir/rpmbuild" -ba \
   --define "_binary_filedigest_algorithm 8" \
   --define "_rpmformat 4" \
   "$tmpdir/rpmbuild/SPECS/stirmake.spec" || die "rpmbuild fail"
+
+mkdir -p pacman-fakeroot
+mkdir -p pacman-fakeroot/pkg/usr/bin
+mkdir -p pacman-fakeroot/pkg/usr/share/man/man1
+cp -p stirmake-"$vname"/stirmake pacman-fakeroot/pkg/usr/bin
+cp -p stirmake-"$vname"/stirmake.1 pacman-fakeroot/pkg/usr/share/man/man1
+ln -s stirmake pacman-fakeroot/pkg/usr/bin/smka
+ln -s stirmake pacman-fakeroot/pkg/usr/bin/smkt
+ln -s stirmake pacman-fakeroot/pkg/usr/bin/smkp
+ln -s stirmake.1 pacman-fakeroot/pkg/usr/share/man/man1/smka.1
+ln -s stirmake.1 pacman-fakeroot/pkg/usr/share/man/man1/smkt.1
+ln -s stirmake.1 pacman-fakeroot/pkg/usr/share/man/man1/smkp.1
+echo "pkgname = stirmake" > pacman-fakeroot/pkg/.PKGINFO
+echo "pkgbase = stirmake" >> pacman-fakeroot/pkg/.PKGINFO
+echo "pkgver = $nonvnamep-1" >> pacman-fakeroot/pkg/.PKGINFO
+echo "pkgdesc = Scalable true implementation of recursive make" >> pacman-fakeroot/pkg/.PKGINFO
+echo "url = https://github.com/Aalto5G/stirmake" >> pacman-fakeroot/pkg/.PKGINFO
+echo "builddate = `date +%s`" >> pacman-fakeroot/pkg/.PKGINFO
+echo "packager = Juha-Matti Tilli <juha-matti.tilli@iki.fi>" >> pacman-fakeroot/pkg/.PKGINFO
+echo "size = `du -sb pacman-fakeroot/pkg/usr|awk '{print $1}'`" >> pacman-fakeroot/pkg/.PKGINFO
+echo "arch = $PACMANARCH" >> pacman-fakeroot/pkg/.PKGINFO
+echo "license = MIT" >> pacman-fakeroot/pkg/.PKGINFO
+echo "depend = glibc" >> pacman-fakeroot/pkg/.PKGINFO
+(cd pacman-fakeroot/pkg; bsdtar -czf .MTREE --format=mtree \
+ --options='!all,use-set,type,uid,gid,mode,time,size,md5,sha256,link' .PKGINFO usr/)
+(cd pacman-fakeroot/pkg; tar --owner=root:0 --group=root:0 --mode="go-w" -cf - .PKGINFO .MTREE usr/|zstd -c -z -q - > "$tmpdir"/stirmake-"$nonvnamep"-1-"$PACMANARCH".pkg.tar.zst)
+rm -rf "pacman-fakeroot"
 rm -rf stirmake-"$vname"
 rm -rf stirmake_"$nonvname"_"$DEBARCH"
 cd "$pwd" || die "Can't chdir back to old directory"
@@ -147,10 +179,16 @@ if [ -e "$PKGDIR"/stirmake-${nonvnameu}-1.$RPMTGT.rpm ]; then
 else
   mv "$tmpdir/rpmbuild/RPMS/$RPMTGT/stirmake-${nonvnameu}-1.$RPMTGT.rpm" "$PKGDIR"/ || die "Can't move package"
 fi
+if [ -e "$PKGDIR"/stirmake-"$nonvnamep"-1-"$PACMANARCH".pkg.tar.zst ]; then
+  die "Package "stirmake-"$nonvnamep"-1-"$PACMANARCH".pkg.tar.zst" already exists"
+else
+  mv "$tmpdir"/stirmake-"$nonvnamep"-1-"$PACMANARCH".pkg.tar.zst "$PKGDIR"/ || die "Can't move package"
+fi
 rm -rf "$tmpdir/rpmbuild"
 rmdir "$tmpdir" || die "Can't rm temporary dir $tmpdir"
 echo
 echo "Package created:"
 echo "stirmakebin-$PKGARCH-$vname.tar.gz"
 echo "stirmake_${nonvname}_${DEBARCH}.deb"
-echo "stirmake-${nonvnameu}-1_${RPMTGT}.rpm"
+echo "stirmake-${nonvnameu}-1.${RPMTGT}.rpm"
+echo stirmake-"$nonvnamep"-1-"$PACMANARCH".pkg.tar.zst
