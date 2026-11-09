@@ -207,8 +207,8 @@ $POSIXFUNCLIST="getenv|globfree|raise|free|recv|putchar|abort|unlink|round|".\
 @	["sh", "-c", "echo \"static const char gitshas[][20] = {\" >> git.h"]
 @	["sh", "-c", "git log --pretty=format:\\\"%h\\\", --abbrev=40|sed 's/\\([0-9A-Fa-f][0-9A-Fa-f]\\)/\\\\x\\1/g' >> git.h"]
 @	["sh", "-c", "echo \"};\" >> git.h"]
-@	["sh", "-c", "echo -n \"static const char * const gitversion = \\\"\" >> git.h"]
-@	["sh", "-c", "echo -n `git describe --tags|sed 's/^v//g'` >> git.h"]
+@	["sh", "-c", "printf '%s' \"static const char * const gitversion = \\\"\" >> git.h"]
+@	["sh", "-c", "printf '%s' `git describe --tags|sed 's/^v//g'` >> git.h"]
 @	["sh", "-c", "echo \"\\\";\" >> git.h"]
 @	["sh", "-c", "echo \"#endif\" >> git.h"]
 @endif

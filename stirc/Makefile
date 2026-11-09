@@ -174,8 +174,8 @@ git.h: ../.git/logs/HEAD
 	echo "static const char gitshas[][20] = {" >> git.h
 	git log --pretty=format:\"%h\", --abbrev=40|sed 's/\([0-9A-Fa-f][0-9A-Fa-f]\)/\\x\1/g' >> git.h
 	echo "};" >> git.h
-	echo -n "static const char * const gitversion = \"" >> git.h
-	echo -n `git describe --tags|sed 's/^v//g'` >> git.h
+	printf "%s" "static const char * const gitversion = \"" >> git.h
+	printf "%s" `git describe --tags|sed 's/^v//g'` >> git.h
 	echo "\";" >> git.h
 	echo "#endif" >> git.h
 endif
