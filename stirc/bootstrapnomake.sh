@@ -16,6 +16,10 @@ docmd()
 doflex()
 {
   if [ -e "$1" -a -e "$2" ]; then
+    if [ "$FLEX" = "false" ]; then
+      echo "Flex disabled but targets exist"
+      return 1
+    fi
     if which $FLEX > /dev/null; then
       return 0
     else
@@ -28,6 +32,10 @@ doflex()
 dobyacc()
 {
   if [ -e "$1" -a -e "$2" ]; then
+    if [ "$BYACC" = "false" ]; then
+      echo "Byacc disabled but targets exist"
+      return 1
+    fi
     if which $BYACC > /dev/null; then
       return 0
     else
