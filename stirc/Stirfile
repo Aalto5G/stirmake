@@ -66,16 +66,34 @@ $(BYACC) ?= @nil
 @endif
 $(BYACC_AVAILABLE) ?= @true
 
-$(WITH_LUA) ?= @false
+$(WITH_LUA) ?= @nil
+@if(@type($(WITH_LUA)) == @type(@nil))
+  $(WITH_LUA) `= ["sh", "-c", 'printf "%s" "$STIR_WITH_LUA"']
+  @if(@strcmp($(WITH_LUA), "1") == 0)
+    $(WITH_LUA) = @true
+  @else
+    $(WITH_LUA) = @false
+  @endif
+@endif
 $(LUAINCS) ?= @nil
 $(LUALIBS) ?= @nil
+$(LIBS) ?= @nil
 @if($(WITH_LUA))
   @if(@type($(LUAINCS)) == @type(@nil))
-    $(LUAINCS) ``= ["pkg-config", "--cflags", "luajit"]
+    $(LUAINCS) ``= ["sh", "-c", "echo $STIR_LUAINCS"]
+    @if($(LUAINCS)[] == 0)
+      $(LUAINCS) ``= ["pkg-config", "--cflags", "luajit"]
+    @endif
   @endif
   @if(@type($(LUALIBS)) == @type(@nil))
-    $(LUALIBS) ``= ["pkg-config", "--libs", "luajit"]
+    $(LUALIBS) ``= ["sh", "-c", "echo $STIR_LUALIBS"]
+    @if($(LUALIBS)[] == 0)
+      $(LUALIBS) ``= ["pkg-config", "--libs", "luajit"]
+    @endif
   @endif
+@endif
+@if(@type($(LIBS)) == @type(@nil))
+  $(LIBS) ``= ["sh", "-c", "echo $STIR_LIBS"]
 @endif
 
 # You can modify these during development
@@ -133,6 +151,7 @@ $(PROG) = @sufsuball($(SRC_PROG), ".c", "")
   $(WITH_LUA) = @LP$(WITH_LUA)
   $(LUAINCS) = @LP$(LUAINCS)
   $(LUALIBS) = @LP$(LUALIBS)
+  $(LIBS) = @LP$(LIBS)
   $(FLEX) = @LP$(FLEX)
   $(BYACC) = @LP$(BYACC)
   @projdirinclude "abce"
@@ -176,7 +195,7 @@ $POSIXFUNCLIST="getenv|globfree|raise|free|recv|putchar|abort|unlink|round|".\
 	ln -s stirmake $@
 
 @patrule @distrule: $(PROG): '%': '%.o' 'libstirmake.a' 'abce/libabce.a'
-@	[@$(CC), @$(CFLAGS), @$(LDFLAGS), "-o", $@, $<, 'libstirmake.a', 'abce/libabce.a', @$(LUALIBS), '-lm']
+@	[@$(CC), @$(CFLAGS), @$(LDFLAGS), "-o", $@, $<, 'libstirmake.a', 'abce/libabce.a', @$(LUALIBS), @$(LIBS), '-lm']
 
 @patrule: $(OBJ): '%.o': '%.c' '%.d'
 @	[@$(CC), @$(CFLAGS), "-c", "-o", $@, $<]

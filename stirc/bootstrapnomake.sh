@@ -45,6 +45,7 @@ export CFLAGS="${CFLAGS:--O3 -Wall -Wextra -Wno-unused-parameter -g}"
 export LDFLAGS="${LDFLAGS:-}"
 export STIR_LUAINCS="${STIR_LUAINCS:-}"
 export STIR_LUALIBS="${STIR_LUALIBS:-}"
+export STIR_LIBS="${STIR_LIBS:-}"
 export STIR_NO_MMAP="${STIR_NO_MMAP:-1}"
 export STIR_VALGRIND_DETECTION="${STIR_VALGRIND_DETECTION:-0}"
 
@@ -120,7 +121,7 @@ done
 docmd rm -f libstirmake.a
 docmd ar rvs libstirmake.a $libobjs || die "ar"
 
-docmd $CC $CFLAGS $LDFLAGS -o stirmake stirmake.o libstirmake.a abce/libabce.a $STIR_LUALIBS -lm || die "cclink"
+docmd $CC $CFLAGS $LDFLAGS -o stirmake stirmake.o libstirmake.a abce/libabce.a $STIR_LUALIBS $STIR_LIBS -lm || die "cclink"
 
 docmd rm -f smka
 docmd rm -f smkt

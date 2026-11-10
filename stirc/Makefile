@@ -41,7 +41,7 @@ DEPGEN := $(patsubst %.c,%.d,$(GEN))
 
 .PHONY: all wc
 
-all: jsonyytest stir inc abce stirmake smka smkt smkp
+all: jsonyytest inc abce stirmake smka smkt smkp
 
 .PHONY: abce
 
@@ -52,6 +52,7 @@ wc:
 #LUALIB:=/usr/lib/x86_64-linux-gnu/liblua5.3.a
 LUAINCS:=
 LUALIBS:=
+LIBS:=
 WITH_LUA?=no
 NO_MMAP?=yes
 VALGRIND_DETECTION?=no
@@ -63,7 +64,7 @@ endif
 
 ifeq ($(WITH_LUA),yes)
 abce:
-	cd abce && $(MAKE) WITH_LUA=yes LUAINCS="$(LUAINCS)" LUALIBS="$(LUALIBS)" CFLAGS="$(CFLAGS)"
+	cd abce && $(MAKE) WITH_LUA=yes LUAINCS="$(LUAINCS)" LUALIBS="$(LUALIBS)" LIBS="$(LIBS)" CFLAGS="$(CFLAGS)"
 else
 abce:
 	cd abce && $(MAKE) CFLAGS="$(CFLAGS)"
@@ -100,16 +101,16 @@ smkp:
 	ln -s stirmake smkp
 
 stirmake: stirmake.o libstirmake.a Makefile abce
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) -lm
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) $(LIBS) -lm
 
 stir: stir.o libstirmake.a Makefile abce
-	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) -lm
+	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) $(LIBS) -lm
 
 jsonyytest: jsonyytest.o libstirmake.a Makefile abce
-	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) -lm
+	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) abce/libabce.a $(filter %.a,$^) abce/libabce.a $(LUALIBS) $(LIBS) -lm
 
 inc: inc.o libstirmake.a Makefile
-	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) $(filter %.a,$^) $(LUALIBS) -lm
+	$(CC) $(CCFLAGS) -o $@ $(filter %.o,$^) $(filter %.a,$^) $(LUALIBS) $(LIBS) -lm
 
 libstirmake.a: $(OBJ_LIB) $(OBJGEN_LIB) Makefile
 	rm -f $@
