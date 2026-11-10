@@ -1,5 +1,8 @@
 #ifndef _STIRUTILS_H_
 #define _STIRUTILS_H_
+#if defined(__sun) && defined(__SVR4)
+#define __EXTENSIONS__
+#endif
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

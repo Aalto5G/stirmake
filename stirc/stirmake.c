@@ -1,3 +1,6 @@
+#if defined(__sun) && defined(__SVR4)
+#define __EXTENSIONS__
+#endif
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/types.h>
