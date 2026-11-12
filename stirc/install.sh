@@ -100,6 +100,7 @@ instbin()
     echocmd ln "$P/bin/$1" "$P/bin/.$1.smkinstold.$$.$H" || exit 1
   fi
   echocmd cp "$1" "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
+  echocmd chmod a+rx,go-w "$P/bin/.$1.smkinstnew.$$.$H" || exit 1
   echocmd mv "$P/bin/.$1.smkinstnew.$$.$H" "$P/bin/$1" || exit 1
   if [ -e "$P/bin/.$1.smkinstold.$$.$H" ]; then
     # If you mount binaries across NFS, and run this command on the NFS server,
@@ -120,6 +121,7 @@ instman()
 {
   echocmd mkdir -p "$PMAN/man/man$2" || exit 1
   echocmd cp "$1.$2" "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
+  echocmd chmod a+r,go-w "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" || exit 1
   echocmd mv "$PMAN/man/man$2/.$1.$2.smkinstnew.$$.$H" "$PMAN/man/man$2/$1.$2" || exit 1
 }
 
