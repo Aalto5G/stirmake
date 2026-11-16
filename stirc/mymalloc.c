@@ -12,49 +12,43 @@
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
 #define ALIGN (_Alignof(max_align_t))
 #else
+struct align_check {
+  unsigned char uch;
+  union {
+    void *p;
+    void (*fp)(void);
+    ptrdiff_t pd;
+    off_t o;
+    size_t sz;
+    ssize_t ssz;
+    unsigned char uch;
+    char ch;
+    unsigned short us;
+    short s;
+    unsigned int ui;
+    int i;
+    unsigned long ul;
+    long l;
+    unsigned long long ull;
+    long long ll;
+    float flt;
+    double dbl;
+    long double ldbl;
+  } u;
+};
 static inline size_t get_max_align_compatibility(void)
 {
-  size_t res = 8;
-  if (sizeof(void*) > res) res *= 2;
-  if (sizeof(void*) > res) res *= 2;
-  if (sizeof(void*) > res) res *= 2;
-  if (sizeof(void*) > res) res *= 2;
-  if (sizeof(void(*)(void)) > res) res *= 2;
-  if (sizeof(void(*)(void)) > res) res *= 2;
-  if (sizeof(void(*)(void)) > res) res *= 2;
-  if (sizeof(void(*)(void)) > res) res *= 2;
-  if (sizeof(ptrdiff_t) > res) res *= 2;
-  if (sizeof(ptrdiff_t) > res) res *= 2;
-  if (sizeof(ptrdiff_t) > res) res *= 2;
-  if (sizeof(ptrdiff_t) > res) res *= 2;
-  if (sizeof(off_t) > res) res *= 2;
-  if (sizeof(off_t) > res) res *= 2;
-  if (sizeof(off_t) > res) res *= 2;
-  if (sizeof(off_t) > res) res *= 2;
-  if (sizeof(size_t) > res) res *= 2;
-  if (sizeof(size_t) > res) res *= 2;
-  if (sizeof(size_t) > res) res *= 2;
-  if (sizeof(size_t) > res) res *= 2;
-  if (sizeof(ssize_t) > res) res *= 2;
-  if (sizeof(ssize_t) > res) res *= 2;
-  if (sizeof(ssize_t) > res) res *= 2;
-  if (sizeof(ssize_t) > res) res *= 2;
-  if (sizeof(long long) > res) res *= 2;
-  if (sizeof(long long) > res) res *= 2;
-  if (sizeof(long long) > res) res *= 2;
-  if (sizeof(long long) > res) res *= 2;
-  if (sizeof(unsigned long long) > res) res *= 2;
-  if (sizeof(unsigned long long) > res) res *= 2;
-  if (sizeof(unsigned long long) > res) res *= 2;
-  if (sizeof(unsigned long long) > res) res *= 2;
-  if (sizeof(double) > res) res *= 2;
-  if (sizeof(double) > res) res *= 2;
-  if (sizeof(double) > res) res *= 2;
-  if (sizeof(double) > res) res *= 2;
-  if (sizeof(long double) > res) res *= 2;
-  if (sizeof(long double) > res) res *= 2;
-  if (sizeof(long double) > res) res *= 2;
-  if (sizeof(long double) > res) res *= 2;
+  size_t res;
+  res = offsetof(struct align_check, u);
+  res += (res == 0);
+  res--;
+  res |= res >> 1;
+  res |= res >> 2;
+  res |= res >> 4;
+  res |= res >> 8;
+  res |= res >> 16;
+  res |= res >> 32;
+  res++;
   return res;
 }
 #define ALIGN (get_max_align_compatibility())
